@@ -6,20 +6,12 @@
 		<button class="button button-block icon-left ion-social-googleplus googleplus-red" ng-click="googleLogin()">Google+</button>
 	</ion-content>
 </ion-view> -->
-
-<ion-pane>
-	<ion-header-bar class="bar-stable">
-	    <h1 class="title">Google Login</h1>
-	</ion-header-bar>
-	<ion-content>
-	    <div style="width: 100%;text-align: center">
-	        <button ng-click="login();" class="button">
-	            Login Via Google
-	        </button>                        
-	        <br/>
-	        <pre>
-	        {{google_data|json}}
-	        </pre>
-	    </div>
-	</ion-content>
-</ion-pane>
+<ion-content scroll="false" class="padding login-container">
+	<div class="login-text padding">
+		<h1>Maxst</h1>
+		<p>Beyond Reality with Maxst</p>
+	</div>
+	<div class="login-button">
+ 		<button class="button button-block button-assertive" ng-click="login()">Log In with Google</button>
+ 	</div>
+</ion-content>

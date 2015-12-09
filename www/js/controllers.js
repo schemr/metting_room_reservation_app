@@ -1,18 +1,37 @@
-angular.module('starter.controllers', ['GoogleLoginService'])
+angular.module('starter.controllers', ['firebase'])
 
-.controller('LoginCtrl', function ($scope, googleLogin) {
-  $scope.google_data = {};
-  $scope.login = function () {
-      var promise = googleLogin.startLogin();
-      promise.then(function (data) {
-          $scope.google_data = data;
-      });
+.controller('LoginCtrl', function ($scope, $firebaseObject, $location, Auth) {
+  Auth.$onAuth(function(authData) {
+    console.log(authData);
+    if (authData === null) {
+      $scope.authData = authData;
+      console.log('Not logged in yet');
+    } else {
+      $scope.authData = authData;
+      console.log('Logged in as', authData.uid);
+      $location.path("/tab/dash");
+    }
+  });
+  $scope.login = function() {
+    Auth.$authWithOAuthRedirect('google').then(function(authData) {
+    }).catch(function(error) {
+      if (error.code === 'TRANSPORT_UNAVAILABLE') {
+        Auth.$authWithOAuthPopup('google').then(function(authData) {
+        });
+      } else {
+        console.log(error);
+      }
+    });
   };
-
 })
 
-.controller('DashCtrl', function($scope) {
+.controller('DashCtrl', function ( $scope, $location, Auth ) {
+   // Logout method
+    $scope.logout = function () {
+      Auth.$unauth();
 
+      $location.path("/login");    
+    };
 })
 .controller('NoticeCtrl', function($scope, $ionicModal, $ionicPopup, SQLServices) {
   

@@ -1,4 +1,4 @@
-angular.module('starter.services', [])
+angular.module('starter.services', ['firebase'])
 
 .factory('Notices', function() {
   // Might use a resource here that returns a JSON array
@@ -120,4 +120,9 @@ angular.module('starter.services', [])
       return getNotices();
     }
   }
-});
+})
+
+.factory("Auth", function($firebaseAuth) {
+  var usersRef = new Firebase("https//shining-inferno-4605.firebaseio.com");
+  return $firebaseAuth(usersRef);
+})

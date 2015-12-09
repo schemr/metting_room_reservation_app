@@ -1,1 +1,20 @@
 /* Empty. Add your own CSS if you like */
+
+.login-container {
+  display: -webkit-flex;
+  -webkit-flex-direction: column;
+  height: 100%;
+  background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(103,166,172,1)), color-stop(51%, rgba(103,166,172,1)), color-stop(100%, rgba(80,138,144,1)));
+  background: -webkit-linear-gradient(top, rgba(103,166,172,1) 0%, rgba(103,166,172,1) 51%, rgba(80,138,144,1) 100%);
+}
+.login-container .login-text h1, .login-container .login-text p{
+	color: #fff;
+	text-align: center;
+}
+.login-container .login-button{
+	width: 100%;
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 10%;
+}

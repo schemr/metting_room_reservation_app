@@ -1,0 +1,44 @@
+<ion-view view-title="Notice">
+  <ion-nav-buttons side="right">
+    <button class="button buttion-icon pull-right" ng-click="newNotice()">
+      <i class="icon ion-compose"></i>
+    </button>
+  </ion-nav-buttons>
+  <ion-content>
+    <ion-list>
+      <ion-item ng-show="!notices.length">
+        <p>No Notice</p>
+      </ion-item>
+      <ion-item ng-show="notices.length" class="item-remove-animate" ng-repeat="notice in notices">
+        <p>{{notice.notice_id}} <strong>{{notice.notice_title}}</strong></p>
+        <ion-option-button class="button-positive" ng-click="onItemEdit(notice.notice_id)">
+          Edit
+        </ion-option-button>
+        <ion-option-button class="button-assertive" ng-click="onItemDelete(notice.notice_id)">
+          Delete
+        </ion-option-button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+
+  <script id="new-notice.html" type="text/ng-template">
+    <div class="modal">
+      <ion-header-bar class="bar-stable">
+        <h1 class="title">New Notice</h1>
+        <button class="button button-clear button-positive" ng-click="closeNewNotice()">Cancel</button>
+      </ion-header-bar>
+      <ion-content>
+        <form ng-submit="createNotice(notice)" >
+          <div class="list">
+              <label class="item item-input">
+                <input type="text" placeholder="공지사항을 입력하세요" ng-model="notice.notice_title">
+              </label>
+          </div>
+          <div class="padding">
+            <button type="submit" class="button button-block button-pisitive">Create Notice</button>
+          </div>
+        </form>
+      </ion-content>
+    </div>
+  </script>
+</ion-view>

@@ -13,13 +13,11 @@ angular.module('starter.controllers', ['firebase'])
     }
   });
   $scope.login = function() {
-    Auth.$authWithOAuthRedirect('google').then(function(authData) {
-    }).catch(function(error) {
-      if (error.code === 'TRANSPORT_UNAVAILABLE') {
-        Auth.$authWithOAuthPopup('google').then(function(authData) {
-        });
+    Auth.$authWithOAuthPopup("google", function(error, authData) {
+      if (error) {
+        console.log("Login Failed!", error);
       } else {
-        console.log(error);
+        console.log("Authenticated successfully with payload:", authData);
       }
     });
   };

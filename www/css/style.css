@@ -4,11 +4,13 @@
   display: -webkit-flex;
   -webkit-flex-direction: column;
   height: 100%;
-  background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(103,166,172,1)), color-stop(51%, rgba(103,166,172,1)), color-stop(100%, rgba(80,138,144,1)));
-  background: -webkit-linear-gradient(top, rgba(103,166,172,1) 0%, rgba(103,166,172,1) 51%, rgba(80,138,144,1) 100%);
+  color:#67A6AC;
+}
+.login-container .login-text{
+	padding-top: 40px;
 }
 .login-container .login-text h1, .login-container .login-text p{
-	color: #fff;
+	color:#67A6AC;
 	text-align: center;
 }
 .login-container .login-button{

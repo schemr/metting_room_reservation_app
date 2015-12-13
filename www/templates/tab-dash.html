@@ -8,11 +8,10 @@
     <div class="list card">
       <div class="item item-divider">Notice</div>
       <div class="item item-body">
-        <div>
-          맥스트 공지사항 입니다.
-        </div>
-        <div>
-          하이브리드 앱 테스트 입니다.
+        <div ng-repeat="notice in notices">
+          {{notice.date | date:'yyyy-MM-dd'}} 
+          <strong>{{notice.title}}</strong> 
+          <span>{{notice.displayName}}</span>
         </div>
       </div>
     </div>
@@ -30,11 +29,10 @@
     <div class="list card">
       <div class="item item-divider">Upcoming Events</div>
       <div class="item item-body">
-        <div>
-          <span>2015.12.07</span> 월간회의
-        </div>
-        <div>
-          <span>2015.12.25</span> 크리스마스
+        <div ng-repeat="event in events">
+           {{event.date | date:'yyyy-MM-dd'}} 
+          <strong>{{event.title}}</strong> 
+          <span>{{event.displayName}}</span>
         </div>
       </div>
     </div>

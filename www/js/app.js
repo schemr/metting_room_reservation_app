@@ -5,8 +5,19 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase'])
-.run(function($ionicPlatform) {
+var firebaseUrl = "https//shining-inferno-4605.firebaseio.com";
+
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase', 'gapi'])
+/*.value('GoogleApp', {
+  apiKey: 'AIzaSyCbn1TBI6fo9rapEDeWIcTy48pgklfSCJk',
+  clientId: '635375782266-ufi7uuokmh7a6so53f6kqd8qu3hks3g6.apps.googleusercontent.com',
+  scopes: [
+    // whatever scopes you need for your app, for example:
+    'https://www.googleapis.com/auth/calendar'
+    // ...
+  ]
+})*/
+.run(function($ionicPlatform, $rootScope, $location, Auth, $ionicLoading) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -19,6 +30,42 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+    ionic.Platform.fullScreen();
+
+    $rootScope.firebaseUrl = firebaseUrl;
+    $rootScope.displayName = null;
+    $rootScope.userInfo = null;
+
+    Auth.$onAuth(function(authData){
+      if (authData){
+        console.log("Logged in as:", authData.uid);
+        console.table(authData);
+        $rootScope.userInfo = authData;
+        $location.path("/tab/dash");
+      }else{
+        console.log("Logged out");
+        $ionicLoading.hide();
+        $rootScope.userInfo = null;
+        $location.path('/login');
+      }
+    });
+
+    $rootScope.logout = function(){
+      console.log("Logging out form the app");
+      $ionicLoading.show({
+        template: 'Logging Out..'
+      });
+      Auth.$unauth();
+    }
+
+    $rootScope.$on("$stateChangeError", function (event, toState, toParams, fromState, fromParams, error) {
+      // We can catch the error thrown when the $requireAuth promise is rejected
+      // and redirect the user back to the home page
+      if (error === "AUTH_REQUIRED") {
+          $location.path("/login");
+      }
+    });
+
   });
 })
 
@@ -34,14 +81,33 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     .state('login', {
     url: '/login',
     templateUrl: 'templates/login.html',
-    controller: 'LoginCtrl'
+    controller: 'LoginCtrl',
+    resolve: {
+      // controller will not be loaded until $waitForAuth resolves
+      // Auth refers to our $firebaseAuth wrapper in the example above
+      "currentAuth": ["Auth",
+          function (Auth) {
+              // $waitForAuth returns a promise so the resolve waits for it to complete
+              return Auth.$waitForAuth();
+    }]
+    }
   })
 
   // setup an abstract state for the tabs directive
     .state('tab', {
     url: '/tab',
     abstract: true,
-    templateUrl: 'templates/tabs.html'
+    templateUrl: 'templates/tabs.html',
+    resolve: {
+    // controller will not be loaded until $requireAuth resolves
+    // Auth refers to our $firebaseAuth wrapper in the example above
+    "currentAuth": ["Auth",
+      function (Auth) {
+        // $requireAuth returns a promise so the resolve waits for it to complete
+        // If the promise is rejected, it will throw a $stateChangeError (see above)
+      return Auth.$requireAuth();
+    }]
+    }
   })
 
   // Each tab has its own nav history stack:

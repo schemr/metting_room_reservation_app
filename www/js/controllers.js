@@ -1,17 +1,9 @@
-angular.module('starter.controllers', ['firebase'])
+angular.module('starter.controllers', ['firebase', 'gapi'])
 
-.controller('LoginCtrl', function ($scope, $firebaseObject, $location, Auth) {
-  Auth.$onAuth(function(authData) {
-    console.log(authData);
-    if (authData === null) {
-      $scope.authData = authData;
-      console.log('Not logged in yet');
-    } else {
-      $scope.authData = authData;
-      console.log('Logged in as', authData.uid);
-      $location.path("/tab/dash");
-    }
-  });
+.controller('LoginCtrl', function ($scope, $location, $ionicModal, $state, $firebaseAuth, $ionicLoading, $rootScope, Auth) {
+  //var ref = new Firebase($scope.firebaseUrl);
+  //var auth = $firebaseAuth(ref);
+
   $scope.login = function() {
     Auth.$authWithOAuthPopup("google", function(error, authData) {
       if (error) {
@@ -23,31 +15,21 @@ angular.module('starter.controllers', ['firebase'])
   };
 })
 
-.controller('DashCtrl', function ( $scope, $location, Auth ) {
-   // Logout method
-    $scope.logout = function () {
-      Auth.$unauth();
-
-      $location.path("/login");    
-    };
+.controller('DashCtrl', function ( $scope, $location, Notices, Events ) {
+  $scope.loadDash = function() {
+    $scope.notices = Notices.all();
+    $scope.events = Events.all();
+  };
+  $scope.loadDash();
 })
-.controller('NoticeCtrl', function($scope, $ionicModal, $ionicPopup, SQLServices) {
-  
-  SQLServices.setup();
 
-  $scope.loadNotice = function(){
-    SQLServices.all().then(function(results){
-      $scope.notices = results;
-    });
-   /* $scope.notices = Notices.all();  */
+.controller('NoticeCtrl', function($scope, $rootScope, $ionicModal, $ionicPopup, Notices) {
+  $scope.loadNotice = function() {
+    $scope.notices = Notices.all()
   };
-  
+
   $scope.loadNotice();
-  
-  $scope.remove = function(notice) {
-    Notices.remove(notice);
-  };
-  
+
   $ionicModal.fromTemplateUrl('new-notice.html', function(modal){
     $scope.noticeModal = modal;
   }, {
@@ -64,34 +46,22 @@ angular.module('starter.controllers', ['firebase'])
   };
 
   $scope.createNotice = function(notice){
-    // save Notice
-    SQLServices.set(notice.notice_title);
+    notice.provider = $rootScope.userInfo.provider;
+    notice.displayName = $rootScope.userInfo.google.displayName;
+    notice.uid = $rootScope.userInfo.uid;
+    Notices.create(notice);
     $scope.loadNotice();
     $scope.noticeModal.hide();
     notice.title='';
   }
 
-  $scope.onItemDelete = function(noticeid){
-    $ionicPopup.confirm({
-      title: 'Confirm Delete',
-      content: '선택한 공지사항을 삭제하겠습니까?'
-    }).then(function(res){
-      if(res){
-        //del notice
-        SQLServices.del(noticeid);
-        $scope.loadNotice();
-      }
-    })
-  }
-
-  $scope.onItemEdit = function(noticeid){
+  $scope.onItemEdit = function(notice){
     $ionicPopup.prompt({
       title: 'Update notice', 
       sunTitle: 'Enter new notice'
     }).then(function(res){
       if(res != undefined){
-        //edit notice
-        SQLServices.edit(res, noticeid);
+        Notices.edit(res, notice);
         $scope.loadNotice();
       }else{
         $scope.loadNotice();
@@ -99,19 +69,138 @@ angular.module('starter.controllers', ['firebase'])
     });
   }
 
-  // move Item
-  $scope.moveItem = function(item, fromIndex, toIndex){
-    $scope.items.splice(fromIndex, 1);
-    $scope.items.splice(toIndex, 0, item);
+  $scope.onItemDelete = function(notice){
+    $ionicPopup.confirm({
+      title: 'Confirm Delete',
+      content: '선택한 공지사항을 삭제하겠습니까?'
+    }).then(function(res){
+      if(res){
+        Notices.remove(notice);
+        $scope.loadNotice();
+      }
+    })
+  }
+})
+
+.controller('RoomCtrl', function($scope, $rootScope, $ionicModal, $ionicPopup) {
+  $scope.loadRoom = function() {
+    //$scope.rooms = Rooms.all()
+    $scope.rooms = {};
+  };
+
+  $scope.loadRoom();
+
+  $ionicModal.fromTemplateUrl('new-room.html', function(modal){
+    $scope.roomModal = modal;
+  }, {
+    scope: $scope,
+    animation: 'slide-in-up'
+  });
+
+  $scope.newRoom = function(){
+    $scope.roomModal.show();
+  };
+
+  $scope.closeNewRoom = function(){
+    $scope.roomModal.hide();
+  };
+
+  $scope.createRoom = function(room){
+    room.provider = $rootScope.userInfo.provider;
+    room.displayName = $rootScope.userInfo.google.displayName;
+    room.uid = $rootScope.userInfo.uid;
+    Rooms.create(room);
+    $scope.loadRoom();
+    $scope.roomModal.hide();
+    room.title='';
   }
 
+  $scope.onItemEdit = function(room){
+    $ionicPopup.prompt({
+      title: 'Update Room', 
+      sunTitle: 'Enter new room'
+    }).then(function(res){
+      if(res != undefined){
+        Rooms.edit(res, event);
+        $scope.loadRoom();
+      }else{
+        $scope.loadRoom();
+      }
+    });
+  }
+
+  $scope.onItemDelete = function(Room){
+    $ionicPopup.confirm({
+      title: 'Confirm Delete',
+      content: '선택한 예약를 삭제하겠습니까?'
+    }).then(function(res){
+      if(res){
+        Rooms.remove(room);
+        $scope.loadRoom();
+      }
+    })
+  }
 })
-.controller('RoomCtrl', function($scope) {
-  
+
+.controller('EventCtrl', function($scope, $rootScope, $ionicModal, $ionicPopup, Events) {
+  $scope.loadEvent = function() {
+    $scope.events = Events.all()
+  };
+
+  $scope.loadEvent();
+
+  $ionicModal.fromTemplateUrl('new-event.html', function(modal){
+    $scope.eventModal = modal;
+  }, {
+    scope: $scope,
+    animation: 'slide-in-up'
+  });
+
+  $scope.newEvent = function(){
+    $scope.eventModal.show();
+  };
+
+  $scope.closeNewEvent = function(){
+    $scope.eventModal.hide();
+  };
+
+  $scope.createEvent = function(event){
+    event.provider = $rootScope.userInfo.provider;
+    event.displayName = $rootScope.userInfo.google.displayName;
+    event.uid = $rootScope.userInfo.uid;
+    Events.create(event);
+    $scope.loadEvent();
+    $scope.eventModal.hide();
+    event.title='';
+  }
+
+  $scope.onItemEdit = function(event){
+    $ionicPopup.prompt({
+      title: 'Update event', 
+      sunTitle: 'Enter new event'
+    }).then(function(res){
+      if(res != undefined){
+        Events.edit(res, event);
+        $scope.loadEvent();
+      }else{
+        $scope.loadEvent();
+      }
+    });
+  }
+
+  $scope.onItemDelete = function(event){
+    $ionicPopup.confirm({
+      title: 'Confirm Delete',
+      content: '선택한 이벤트를 삭제하겠습니까?'
+    }).then(function(res){
+      if(res){
+        Events.remove(event);
+        $scope.loadEvent();
+      }
+    })
+  }
 })
-.controller('EventCtrl', function($scope) {
-  
-})
+
 .controller('ChatsCtrl', function($scope, Chats) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.

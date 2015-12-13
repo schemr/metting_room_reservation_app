@@ -1,15 +1,49 @@
 <ion-view view-title="Event">
+  <ion-nav-buttons side="right">
+    <button class="button buttion-icon pull-right" ng-click="newEvent()">
+      <i class="icon ion-compose"></i>
+    </button>
+  </ion-nav-buttons>
   <ion-content>
     <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="chat in chats" type="item-text-wrap">
-        <h2>{{chat.name}}</h2>
-        <p>{{chat.lastText}}</p>
-        <i class="icon ion-chevron-right icon-accessory"></i>
-
-        <ion-option-button class="button-assertive" ng-click="remove(chat)">
+      <ion-item ng-show="!events.length">
+        <p>No Event</p>
+      </ion-item>
+      <ion-item ng-show="events.length" class="item-remove-animate" ng-repeat="event in events">
+        <p>
+          {{event.date | date:'yyyy-MM-dd'}} 
+          <strong>{{event.title}}</strong> 
+          <span>{{event.displayName}}</span>
+          <!-- edit button -->
+          <button class="button buttion-icon" ng-click="onItemEdit(event)" ng-show="event.uid == userInfo.uid">
+            <i class="icon ion-edit"></i>  
+          </button>
+        </p>
+        <ion-option-button class="button-assertive" ng-click="onItemDelete(event)" ng-show="event.uid == userInfo.uid">
           Delete
         </ion-option-button>
       </ion-item>
     </ion-list>
   </ion-content>
+
+  <script id="new-event.html" type="text/ng-template">
+    <div class="modal">
+      <ion-header-bar class="bar-stable">
+        <h1 class="title">New Event</h1>
+        <button class="button button-clear button-positive" ng-click="closeNewEvent()">Cancel</button>
+      </ion-header-bar>
+      <ion-content>
+        <form ng-submit="createEvent(event)" >
+          <div class="list">
+              <label class="item item-input">
+                <input type="text" placeholder="이벤트를 입력하세요" ng-model="event.title">
+              </label>
+          </div>
+          <div class="padding">
+            <button type="submit" class="button button-block button-pisitive">Create Event</button>
+          </div>
+        </form>
+      </ion-content>
+    </div>
+  </script>
 </ion-view>

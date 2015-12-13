@@ -10,11 +10,16 @@
         <p>No Notice</p>
       </ion-item>
       <ion-item ng-show="notices.length" class="item-remove-animate" ng-repeat="notice in notices">
-        <p>{{notice.notice_id}} <strong>{{notice.notice_title}}</strong></p>
-        <ion-option-button class="button-positive" ng-click="onItemEdit(notice.notice_id)">
-          Edit
-        </ion-option-button>
-        <ion-option-button class="button-assertive" ng-click="onItemDelete(notice.notice_id)">
+        <p>
+          {{notice.date | date:'yyyy-MM-dd'}} 
+          <strong>{{notice.title}}</strong> 
+          <span>{{notice.displayName}}</span>
+          <!-- edit button -->
+          <button class="button buttion-icon" ng-click="onItemEdit(notice)" ng-show="notice.uid == userInfo.uid">
+            <i class="icon ion-edit"></i>  
+          </button>
+        </p>
+        <ion-option-button class="button-assertive" ng-click="onItemDelete(notice)" ng-show="notice.uid == userInfo.uid">
           Delete
         </ion-option-button>
       </ion-item>
@@ -31,7 +36,7 @@
         <form ng-submit="createNotice(notice)" >
           <div class="list">
               <label class="item item-input">
-                <input type="text" placeholder="공지사항을 입력하세요" ng-model="notice.notice_title">
+                <input type="text" placeholder="공지사항을 입력하세요" ng-model="notice.title">
               </label>
           </div>
           <div class="padding">

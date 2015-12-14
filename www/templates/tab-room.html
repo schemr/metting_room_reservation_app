@@ -5,14 +5,17 @@
     </button>
   </ion-nav-buttons>
   <ion-content>
-    <ion-list ng-repeat="room in rooms">
-      <h2>{{room.date}}</h2>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" | orderBy:'date'>
-        <p>{{day.time}}</p>
-        <p>{{day.displayName}}</p>
-        <p>{{day.title}}</p>
-        <p>{{day.attendee}}</p>
-        <ion-option-button class="button-assertive" ng-click="remove(days)">
+    <ion-list ng-repeat="roomPerDate in roomsToFilter() | filter:filterDates | orderBy:'date'">
+      <h2>{{roomPerDate.date | date:'yyyy-MM-dd'}}</h2>
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="room in rooms | filter:{date: roomPerDate.date}">
+        <p>
+            {{room.startTime}} ~ {{room.endTime}} , {{room.displayName}} , {{room.title}} , {{room.attendee}}
+            <!-- edit button -->
+            <button class="button buttion-icon" ng-click="onItemEdit(room)" ng-show="room.uid == userInfo.uid">
+                <i class="icon ion-edit"></i>  
+            </button>
+        </p>
+        <ion-option-button class="button-assertive" ng-click="onItemDelete(room)" ng-show="room.uid == userInfo.uid">
           Delete
         </ion-option-button>
       </ion-item>
@@ -29,39 +32,33 @@
         <div class="list">
             <label class="item item-input">
               <span class="input-label">Date</span>
-              <input type="date" ng-model="room.day">
+              <input type="date" ng-model="room.date">
             </label>
         </div>
         <div class="list">
             <label class="item item-input item-select">
-                    <div class="input-label">
-                        시작시간
-                    </div>
-                    <select>
-                        <option selected>09</option>
-                        <option >10</option>
-                        <option>11</option>
-                    </select>
-                    <select>
-                        <option selected>00</option>
-                        <option >30</option>
-                    </select>
-                </label>
+                <div class="input-label">
+                    시작시간
+                </div>
+                <select ng-model="room.startTime">
+                    <option selected>09:00</option>
+                    <option >09:30</option>
+                    <option>10:00</option>
+                    <option>10:30</option>
+                </select>
+            </label>
         </div>
          <div class="list">
             <label class="item item-input item-select">
                     <div class="input-label">
                         종료시간
                     </div>
-                    <select>
-                        <option selected>09</option>
-                        <option >10</option>
-                        <option>11</option>
-                    </select>
-                    <select>
-                        <option selected>00</option>
-                        <option >30</option>
-                    </select>
+                <select ng-model="room.endTime">
+                    <option selected>09:00</option>
+                    <option >09:30</option>
+                    <option>10:00</option>
+                    <option>10:30</option>
+                </select>
                 </label>
         </div>
         <div class="list">

@@ -72,7 +72,6 @@ angular.module('starter.services', ['firebase'])
   var ref = new Firebase(firebaseUrl);
   var rooms = $firebaseArray(ref.child('rooms'));
   
-  
   function getRooms(){
     return rooms;
   }
@@ -84,17 +83,20 @@ angular.module('starter.services', ['firebase'])
     create: function(room) {
       rooms.$add({
         title: room.title,
-        date: new Date().valueOf(),
+        date: room.date.valueOf(),
+        startTime: room.startTime,
+        endTime: room.endTime,
         displayName: room.displayName,
-        uid: room.uid
+        uid: room.uid,
+        attendee: room.attendee
       })
     },
-    edit: function(res, notice) {
-      notices.$getRecord(notice.$id).title = res;
-      notices.$save(notice);
+    edit: function(res, room) {
+      rooms.$getRecord(room.$id).title = res;
+      rooms.$save(room);
     },
-    remove: function(notice) {
-      notices.$remove(notice);
+    remove: function(room) {
+      rooms.$remove(room);
     }
   };
 })

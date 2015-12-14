@@ -1,4 +1,4 @@
-angular.module('starter.controllers', ['firebase', 'gapi'])
+angular.module('starter.controllers', ['firebase', 'gapi', 'angular.filter'])
 
 .controller('LoginCtrl', function ($scope, $location, $ionicModal, $state, $firebaseAuth, $ionicLoading, $rootScope, Auth) {
   //var ref = new Firebase($scope.firebaseUrl);
@@ -82,11 +82,24 @@ angular.module('starter.controllers', ['firebase', 'gapi'])
   }
 })
 
-.controller('RoomCtrl', function($scope, $rootScope, $ionicModal, $ionicPopup) {
+.controller('RoomCtrl', function($scope, $rootScope, $ionicModal, $ionicPopup, Rooms) {
   $scope.loadRoom = function() {
-    //$scope.rooms = Rooms.all()
-    $scope.rooms = {};
+    $scope.rooms = Rooms.all();
   };
+  var indexedDates = [];
+
+  $scope.roomsToFilter = function() {
+    indexedDates = [];
+    return $scope.rooms;
+  }
+
+  $scope.filterDates = function(room) {
+    var dateIsNew = indexedDates.indexOf(room.date) == -1;
+    if (dateIsNew) {
+      indexedDates.push(room.date);
+    }
+    return dateIsNew;
+  }
 
   $scope.loadRoom();
 
@@ -112,7 +125,7 @@ angular.module('starter.controllers', ['firebase', 'gapi'])
     Rooms.create(room);
     $scope.loadRoom();
     $scope.roomModal.hide();
-    room.title='';
+    room={};
   }
 
   $scope.onItemEdit = function(room){

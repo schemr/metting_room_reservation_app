@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 var firebaseUrl = "https//shining-inferno-4605.firebaseio.com";
 
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase', 'gapi'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase', 'gapi', 'angular.filter'])
 /*.value('GoogleApp', {
   apiKey: 'AIzaSyCbn1TBI6fo9rapEDeWIcTy48pgklfSCJk',
   clientId: '635375782266-ufi7uuokmh7a6so53f6kqd8qu3hks3g6.apps.googleusercontent.com',

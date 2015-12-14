@@ -5,8 +5,13 @@
     </button>
   </ion-nav-buttons>
   <ion-content>
-    <ion-list ng-repeat="roomPerDate in roomsToFilter() | filter:filterDates | orderBy:'date'">
-      <h2>{{roomPerDate.date | date:'yyyy-MM-dd'}}</h2>
+    <ion-list ng-show="!rooms.length">
+      <ion-item>
+        <p>No Reservation</p>
+      </ion-item>
+    </ion-list>
+    <ion-list ng-show="rooms.length" ng-repeat="roomPerDate in roomsToFilter() | filter:filterDates | orderBy:'date'">
+      <h2>{{roomPerDate.date}}</h2>
       <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="room in rooms | filter:{date: roomPerDate.date}">
         <p>
             {{room.startTime}} ~ {{room.endTime}} , {{room.displayName}} , {{room.title}} , {{room.attendee}}
@@ -32,7 +37,7 @@
         <div class="list">
             <label class="item item-input">
               <span class="input-label">Date</span>
-              <input type="date" ng-model="room.date">
+              <input type="date" min="{{toDay}}" ng-model="room.date" ng-change="debug(room)">
             </label>
         </div>
         <div class="list">

@@ -15,10 +15,16 @@ angular.module('starter.controllers', ['firebase', 'gapi', 'angular.filter'])
   };
 })
 
-.controller('DashCtrl', function ( $scope, $location, Notices, Events ) {
+.controller('DashCtrl', function ( $scope, $location, Notices, Events, Rooms, $rootScope ) {
   $scope.loadDash = function() {
     $scope.notices = Notices.all();
     $scope.events = Events.all();
+    $scope.rooms = Rooms.all();
+    console.log($scope.rooms);
+    if($scope.rooms != undefined){
+      $scope.rooms = Rooms.dashAll();  
+    }
+    $scope.toDay = toDay;
   };
   $scope.loadDash();
 })
@@ -84,6 +90,7 @@ angular.module('starter.controllers', ['firebase', 'gapi', 'angular.filter'])
 
 .controller('RoomCtrl', function($scope, $rootScope, $ionicModal, $ionicPopup, Rooms) {
   $scope.loadRoom = function() {
+    $scope.toDay = toDay;
     $scope.rooms = Rooms.all();
   };
   var indexedDates = [];
@@ -122,10 +129,17 @@ angular.module('starter.controllers', ['firebase', 'gapi', 'angular.filter'])
     room.provider = $rootScope.userInfo.provider;
     room.displayName = $rootScope.userInfo.google.displayName;
     room.uid = $rootScope.userInfo.uid;
+    room.date = room.date.yyyymmdd();
+    console.log(room.date);
+    console.log(new Date());
     Rooms.create(room);
+    room={};
     $scope.loadRoom();
     $scope.roomModal.hide();
-    room={};
+    
+  }
+  $scope.debug = function(room){
+    console.log(room.date);
   }
 
   $scope.onItemEdit = function(room){
@@ -142,7 +156,7 @@ angular.module('starter.controllers', ['firebase', 'gapi', 'angular.filter'])
     });
   }
 
-  $scope.onItemDelete = function(Room){
+  $scope.onItemDelete = function(room){
     $ionicPopup.confirm({
       title: 'Confirm Delete',
       content: '선택한 예약를 삭제하겠습니까?'

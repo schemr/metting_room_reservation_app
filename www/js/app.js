@@ -6,6 +6,16 @@
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
 var firebaseUrl = "https//shining-inferno-4605.firebaseio.com";
+// yyyymmdd 형태로 포매팅된 날짜 반환
+Date.prototype.yyyymmdd = function() {         
+                                
+        var yyyy = this.getFullYear().toString();                                    
+        var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based         
+        var dd  = this.getDate().toString();             
+                            
+        return yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
+   };  
+var toDay = new Date().yyyymmdd();
 
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase', 'gapi', 'angular.filter'])
 /*.value('GoogleApp', {

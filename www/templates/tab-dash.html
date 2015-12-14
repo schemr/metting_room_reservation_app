@@ -16,13 +16,12 @@
       </div>
     </div>
     <div class="list card">
-      <div class="item item-divider">Meeting Room (2015.12.01)</div>
+      <div class="item item-divider">Meeting Room ({{toDay}})</div>
       <div class="item item-body">
-        <div>
-          There is a fire in <b>sector 3</b>
-        </div>
-        <div>
-          There is a fire in <b>sector 3</b>
+        <div ng-repeat="room in rooms">
+          {{room.date | date:'yyyy-MM-dd'}} 
+          <strong>{{room.title}}</strong> 
+          <span>{{room.displayName}}</span>
         </div>
       </div>
     </div>

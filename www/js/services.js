@@ -1,6 +1,6 @@
 angular.module('starter.services', ['firebase'])
 
-.factory('Events', function($firebaseArray) {
+.factory('Events', function($firebaseArray, $rootScope) {
   // Might use a resource here that returns a JSON array
   // Some fake testing data
   var ref = new Firebase(firebaseUrl);
@@ -18,7 +18,7 @@ angular.module('starter.services', ['firebase'])
     create: function(event) {
       events.$add({
         title: event.title,
-        date: new Date().valueOf(),
+        date: toDay,
         displayName: event.displayName,
         uid: event.uid
       })
@@ -33,7 +33,7 @@ angular.module('starter.services', ['firebase'])
   };
 })
 
-.factory('Notices', function($firebaseArray) {
+.factory('Notices', function($firebaseArray, $rootScope) {
   // Might use a resource here that returns a JSON array
   // Some fake testing data
   var ref = new Firebase(firebaseUrl);
@@ -51,7 +51,7 @@ angular.module('starter.services', ['firebase'])
     create: function(notice) {
       notices.$add({
         title: notice.title,
-        date: new Date().valueOf(),
+        date: toDay,
         displayName: notice.displayName,
         uid: notice.uid
       })
@@ -66,30 +66,36 @@ angular.module('starter.services', ['firebase'])
   };
 })
 
-.factory('Rooms', function($firebaseArray) {
+.factory('Rooms', function($firebaseArray, $rootScope) {
   // Might use a resource here that returns a JSON array
   // Some fake testing data
   var ref = new Firebase(firebaseUrl);
   var rooms = $firebaseArray(ref.child('rooms'));
-  
   function getRooms(){
     return rooms;
   }
-
+  function getDashRooms(){
+    var dashRooms = $firebaseArray(ref.child('rooms').orderByChild('date').equalTo(toDay));
+    return dashRooms;
+  }
   return {
     all: function(){
       return getRooms()
     },
+    dashAll: function(){
+      return getDashRooms();
+    },
     create: function(room) {
       rooms.$add({
         title: room.title,
-        date: room.date.valueOf(),
+        date: room.date,
         startTime: room.startTime,
         endTime: room.endTime,
         displayName: room.displayName,
         uid: room.uid,
         attendee: room.attendee
       })
+      console.log(room.date);
     },
     edit: function(res, room) {
       rooms.$getRecord(room.$id).title = res;

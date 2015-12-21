@@ -1,0 +1,91 @@
+<ion-view view-title="Meeting Room">
+  <ion-nav-buttons side="right">
+    <button class="button buttion-icon pull-right" ng-click="newRoom()">
+      <i class="icon ion-compose"></i>
+    </button>
+  </ion-nav-buttons>
+  <ion-content>
+    <div class="list" ng-show="!rooms.length">
+      <div class="item">
+        No Reservation
+      </div>
+    </div>
+    <div class="list" ng-show="rooms.length">
+      <div ng-repeat="roomPerDate in roomsToFilter() | filter:filterDates | orderBy:'date'">
+        <div class="item item-divider">
+          {{roomPerDate.date}}
+        </div>
+        <div class="item item-button-right" ng-repeat="room in rooms | filter:{date: roomPerDate.date}">
+          {{room.startTime}}~{{room.endTime}}
+          <strong>{{room.title}}</strong> <br/>
+          <span class="label_a">{{room.displayName}}</span> / <span class="label_b">{{room.attendee}}</span>
+          <div class="buttons buttons_a">
+            <button class="button button-positive button_a" ng-click="onItemEdit(room)" ng-show="room.uid == userInfo.uid">
+              <i class="icon ion-edit"></i>  
+            </button>
+            <button class="button button-assertive" ng-click="onItemDelete(room)" ng-show="room.uid == userInfo.uid">
+              <i class="icon ion-trash-b"></i>  
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+  <script id="new-room.html" type="text/ng-template">
+  <div class="modal">
+    <ion-header-bar class="bar-stable">
+      <h1 class="title">New Meeting Room Reservation</h1>
+      <button class="button button-clear button-positive" ng-click="closeNewRoom()">Cancel</button>
+    </ion-header-bar>
+    <ion-content>
+      <form ng-submit="createRoom(room)" >
+        <div class="list">
+            <label class="item item-input">
+              <span class="input-label">Date</span>
+              <input type="date" min="{{toDay}}" ng-model="room.date">
+            </label>
+        </div>
+        <div class="list">
+            <label class="item item-input item-select">
+                <div class="input-label">
+                    시작시간
+                </div>
+                <select ng-model="room.startTime">
+                    <option selected>09:00</option>
+                    <option >09:30</option>
+                    <option>10:00</option>
+                    <option>10:30</option>
+                </select>
+            </label>
+        </div>
+         <div class="list">
+            <label class="item item-input item-select">
+                    <div class="input-label">
+                        종료시간
+                    </div>
+                <select ng-model="room.endTime">
+                    <option selected>09:00</option>
+                    <option >09:30</option>
+                    <option>10:00</option>
+                    <option>10:30</option>
+                </select>
+                </label>
+        </div>
+        <div class="list">
+            <label class="item item-input">
+              <input type="text" placeholder="내용을 입력하세요" ng-model="room.title">
+            </label>
+        </div>
+        <div class="list">
+            <label class="item item-input">
+              <input type="text" placeholder="참석자를 입력하세요" ng-model="room.attendee">
+            </label>
+        </div>
+        <div class="padding">
+          <button type="submit" class="button button-block button-pisitive">Create Meeting Room Reservation</button>
+        </div>
+      </form>
+    </ion-content>
+  </div>
+  </script>
+</ion-view>

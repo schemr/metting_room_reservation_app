@@ -5,26 +5,31 @@
     </button>
   </ion-nav-buttons>
   <ion-content>
-    <ion-list ng-show="!rooms.length">
-      <ion-item>
-        <p>No Reservation</p>
-      </ion-item>
-    </ion-list>
-    <ion-list ng-show="rooms.length" ng-repeat="roomPerDate in roomsToFilter() | filter:filterDates | orderBy:'date'">
-      <h2>{{roomPerDate.date}}</h2>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="room in rooms | filter:{date: roomPerDate.date}">
-        <p>
-            {{room.startTime}} ~ {{room.endTime}} , {{room.displayName}} , {{room.title}} , {{room.attendee}}
-            <!-- edit button -->
-            <button class="button buttion-icon" ng-click="onItemEdit(room)" ng-show="room.uid == userInfo.uid">
-                <i class="icon ion-edit"></i>  
+    <div class="list" ng-show="!rooms.length">
+      <div class="item">
+        No Reservation
+      </div>
+    </div>
+    <div class="list" ng-show="rooms.length">
+      <div ng-repeat="roomPerDate in roomsToFilter() | filter:filterDates | orderBy:'date'">
+        <div class="item item-divider">
+          {{roomPerDate.date}}
+        </div>
+        <div class="item item-button-right" ng-repeat="room in rooms | filter:{date: roomPerDate.date}">
+          {{room.startTime}}~{{room.endTime}}
+          <strong>{{room.title}}</strong> <br/>
+          <span class="label_a">{{room.displayName}}</span> / <span class="label_b">{{room.attendee}}</span>
+          <div class="buttons buttons_a">
+            <!-- <button class="button button-positive button_a" ng-click="editRoom(room)" ng-show="room.uid == userInfo.uid">
+              <i class="icon ion-edit"></i>  
+            </button> -->
+            <button class="button button-assertive" ng-click="onItemDelete(room)" ng-show="room.uid == userInfo.uid">
+              <i class="icon ion-trash-b"></i>  
             </button>
-        </p>
-        <ion-option-button class="button-assertive" ng-click="onItemDelete(room)" ng-show="room.uid == userInfo.uid">
-          Delete
-        </ion-option-button>
-      </ion-item>
-    </ion-list>
+          </div>
+        </div>
+      </div>
+    </div>
   </ion-content>
   <script id="new-room.html" type="text/ng-template">
   <div class="modal">
@@ -37,7 +42,7 @@
         <div class="list">
             <label class="item item-input">
               <span class="input-label">Date</span>
-              <input type="date" min="{{toDay}}" ng-model="room.date" ng-change="debug(room)">
+              <input type="date" min="{{toDay}}" ng-model="room.date" ng-init="room.date = initToDay">
             </label>
         </div>
         <div class="list">
@@ -45,26 +50,50 @@
                 <div class="input-label">
                     시작시간
                 </div>
-                <select ng-model="room.startTime">
-                    <option selected>09:00</option>
-                    <option >09:30</option>
+                <select ng-model="room.startTime" ng-init="room.startTime='09:00'">
+                    <option>09:00</option>
+                    <option>09:30</option>
                     <option>10:00</option>
                     <option>10:30</option>
+                    <option>11:00</option>
+                    <option>11:30</option>
+                    <option>13:00</option>
+                    <option>13:30</option>
+                    <option>14:00</option>
+                    <option>14:30</option>
+                    <option>15:00</option>
+                    <option>15:30</option>
+                    <option>16:00</option>
+                    <option>16:30</option>
+                    <option>17:00</option>
+                    <option>17:30</option>
                 </select>
             </label>
         </div>
          <div class="list">
             <label class="item item-input item-select">
-                    <div class="input-label">
-                        종료시간
-                    </div>
-                <select ng-model="room.endTime">
-                    <option selected>09:00</option>
-                    <option >09:30</option>
-                    <option>10:00</option>
-                    <option>10:30</option>
-                </select>
-                </label>
+              <div class="input-label">
+                  종료시간
+              </div>
+              <select ng-model="room.endTime" ng-init="room.endTime='09:30'">
+                  <option>09:30</option>
+                  <option>10:00</option>
+                  <option>10:30</option>
+                  <option>11:00</option>
+                  <option>11:30</option>
+                  <option>13:00</option>
+                  <option>13:30</option>
+                  <option>14:00</option>
+                  <option>14:30</option>
+                  <option>15:00</option>
+                  <option>15:30</option>
+                  <option>16:00</option>
+                  <option>16:30</option>
+                  <option>17:00</option>
+                  <option>17:30</option>
+                  <option>18:00</option>
+              </select>
+          </label>
         </div>
         <div class="list">
             <label class="item item-input">
@@ -78,6 +107,87 @@
         </div>
         <div class="padding">
           <button type="submit" class="button button-block button-pisitive">Create Meeting Room Reservation</button>
+        </div>
+      </form>
+    </ion-content>
+  </div>
+  </script>
+  <script id="edit-room.html" type="text/ng-template">
+  <div class="modal">
+    <ion-header-bar class="bar-stable">
+      <h1 class="title">Edit Meeting Room Reservation</h1>
+      <button class="button button-clear button-positive" ng-click="closeEditRoom()">Cancel</button>
+    </ion-header-bar>
+    <ion-content>
+      <form ng-submit="onEditRoom(room)" >
+        <div class="list">
+            <label class="item item-input">
+              <span class="input-label">Date</span>
+              <input type="date" min="{{toDay}}" ng-model="room.date" ng-init="room.date">
+            </label>
+        </div>
+        <div class="list">
+            <label class="item item-input item-select">
+                <div class="input-label">
+                    시작시간
+                </div>
+                <select ng-model="room.startTime" ng-init="room.startTime">
+                    <option>09:00</option>
+                    <option>09:30</option>
+                    <option>10:00</option>
+                    <option>10:30</option>
+                    <option>11:00</option>
+                    <option>11:30</option>
+                    <option>13:00</option>
+                    <option>13:30</option>
+                    <option>14:00</option>
+                    <option>14:30</option>
+                    <option>15:00</option>
+                    <option>15:30</option>
+                    <option>16:00</option>
+                    <option>16:30</option>
+                    <option>17:00</option>
+                    <option>17:30</option>
+                </select>
+            </label>
+        </div>
+         <div class="list">
+            <label class="item item-input item-select">
+              <div class="input-label">
+                  종료시간
+              </div>
+              <select ng-model="room.endTime" ng-init="room.endTime">
+                  <option>09:30</option>
+                  <option>10:00</option>
+                  <option>10:30</option>
+                  <option>11:00</option>
+                  <option>11:30</option>
+                  <option>13:00</option>
+                  <option>13:30</option>
+                  <option>14:00</option>
+                  <option>14:30</option>
+                  <option>15:00</option>
+                  <option>15:30</option>
+                  <option>16:00</option>
+                  <option>16:30</option>
+                  <option>17:00</option>
+                  <option>17:30</option>
+                  <option>18:00</option>
+              </select>
+          </label>
+        </div>
+        <div class="list">
+            <label class="item item-input">
+              <input type="text" placeholder="내용을 입력하세요" ng-model="room.title">
+            </label>
+        </div>
+        <div class="list">
+            <label class="item item-input">
+              <input type="text" placeholder="참석자를 입력하세요" ng-model="room.attendee">
+            </label>
+        </div>
+        <div class="padding">
+          <button type="submit" class="button button-block button-pisitive">Edit Meeting Room Reservation</button>
         </div>
       </form>
     </ion-content>

@@ -9,13 +9,13 @@
       <ion-item ng-show="!notices.length">
         <p>No Notice</p>
       </ion-item>
-      <ion-item ng-show="notices.length" class="item-remove-animate" ng-repeat="notice in notices">
-        <p>
+      <ion-item ng-show="notices.length" class="item-remove-animate" ng-repeat="notice in notices | orderBy:'-date'">
+        <p class="item-button-right textWrap">
           {{notice.date | date:'yyyy-MM-dd'}} 
           <strong>{{notice.title}}</strong> 
-          <span>{{notice.displayName}}</span>
+          <span class="label_a">{{notice.displayName}}</span>
           <!-- edit button -->
-          <button class="button buttion-icon" ng-click="onItemEdit(notice)" ng-show="notice.uid == userInfo.uid">
+          <button class="button button-positive button_b" ng-click="onItemEdit(notice)" ng-show="notice.uid == userInfo.uid">
             <i class="icon ion-edit"></i>  
           </button>
         </p>

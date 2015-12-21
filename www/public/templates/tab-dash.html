@@ -1,0 +1,40 @@
+<ion-view view-title="Maxst">
+  <ion-nav-buttons side="right">
+    <button class="button buttion-icon pull-right" ng-click="logout()">
+      Logout
+    </button>
+  </ion-nav-buttons>
+  <ion-content class="padding">
+    <div class="list card">
+      <div class="item item-divider">Notice</div>
+      <div class="item item-body">
+        <div ng-repeat="notice in notices">
+          {{notice.date | date:'yyyy-MM-dd'}} 
+          <strong>{{notice.title}}</strong> 
+          <span class="label_a">{{notice.displayName}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="list card">
+      <div class="item item-divider">Meeting Room ({{toDay}})</div>
+      <div class="item item-body">
+        <div ng-repeat="room in rooms">
+          {{room.startTime}}~{{room.endTime}} 
+          <strong>{{room.title}}</strong><br/> 
+          <span class="label_a">{{room.displayName}}</span>
+          <span class="label_b">{{room.attendee}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="list card">
+      <div class="item item-divider">Upcoming Events</div>
+      <div class="item item-body">
+        <div ng-repeat="event in events">
+           {{event.date | date:'yyyy-MM-dd'}} 
+          <strong>{{event.title}}</strong> 
+          <span class="label_a">{{event.displayName}}</span>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

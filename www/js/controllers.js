@@ -7,20 +7,26 @@ angular.module('starter.controllers', ['firebase', 'gapi', 'angular.filter'])
   $scope.login = function() {
     Auth.$authWithOAuthPopup("google", function(error, authData) {
       if (error) {
-        console.log("Login Failed!", error);
-      } else {
-        console.log("Authenticated successfully with payload:", authData);
+        if (error.code === "TRANSPORT_UNAVAILABLE") {
+          // fall-back to browser redirects, and pick up the session
+          // automatically when we come back to the origin page
+          Auth.$authWithOAuthRedirect("google", function(error) { 
+            console.log(error);     
+          });
+        }
+      } else if (authData) {
+        console.log(authData);
+        // user authenticated with Firebase
       }
     });
   };
 })
 
-.controller('DashCtrl', function ( $scope, $location, Notices, Events, Rooms, $rootScope ) {
+.controller('DashCtrl', function ( $scope, $location, Notices, Events, Rooms, $rootScope, $ionicLoading ) {
   $scope.loadDash = function() {
     $scope.notices = Notices.all();
     $scope.events = Events.all();
     $scope.rooms = Rooms.all();
-    console.log($scope.rooms);
     if($scope.rooms != undefined){
       $scope.rooms = Rooms.dashAll();  
     }
@@ -64,7 +70,8 @@ angular.module('starter.controllers', ['firebase', 'gapi', 'angular.filter'])
   $scope.onItemEdit = function(notice){
     $ionicPopup.prompt({
       title: 'Update notice', 
-      sunTitle: 'Enter new notice'
+      sunTitle: 'Enter new notice',
+      template: notice.title
     }).then(function(res){
       if(res != undefined){
         Notices.edit(res, notice);
@@ -92,6 +99,7 @@ angular.module('starter.controllers', ['firebase', 'gapi', 'angular.filter'])
   $scope.loadRoom = function() {
     $scope.toDay = toDay;
     $scope.rooms = Rooms.all();
+    $scope.initToDay = new Date();
   };
   var indexedDates = [];
 
@@ -117,35 +125,49 @@ angular.module('starter.controllers', ['firebase', 'gapi', 'angular.filter'])
     animation: 'slide-in-up'
   });
 
+  $ionicModal.fromTemplateUrl('edit-room.html', function(modal){
+    $scope.roomModal1 = modal;
+  }, {
+    scope: $scope,
+    animation: 'slide-in-up'
+  });
+
   $scope.newRoom = function(){
+    $scope.room = {};
     $scope.roomModal.show();
   };
-
+  $scope.editRoom = function(room){
+    $scope.room = room;
+    $scope.roomModal1.show(); 
+  }
   $scope.closeNewRoom = function(){
     $scope.roomModal.hide();
   };
+  $scope.closeEditRoom = function(){
+    $scope.roomModal1.hide();
+  }
 
   $scope.createRoom = function(room){
     room.provider = $rootScope.userInfo.provider;
     room.displayName = $rootScope.userInfo.google.displayName;
     room.uid = $rootScope.userInfo.uid;
     room.date = room.date.yyyymmdd();
-    console.log(room.date);
-    console.log(new Date());
     Rooms.create(room);
-    room={};
     $scope.loadRoom();
     $scope.roomModal.hide();
-    
   }
-  $scope.debug = function(room){
-    console.log(room.date);
+
+  $scope.onEditRoom = function(room){
+    room.date = room.date.yyyymmdd();
+    Rooms.edit(room);
+    $scope.loadRoom();
+    $scope.roomModal1.hide();
   }
 
   $scope.onItemEdit = function(room){
     $ionicPopup.prompt({
-      title: 'Update Room', 
-      sunTitle: 'Enter new room'
+      title: 'Update Reservation', 
+      sunTitle: 'Enter new Reservation'
     }).then(function(res){
       if(res != undefined){
         Rooms.edit(res, event);
@@ -171,7 +193,8 @@ angular.module('starter.controllers', ['firebase', 'gapi', 'angular.filter'])
 
 .controller('EventCtrl', function($scope, $rootScope, $ionicModal, $ionicPopup, Events) {
   $scope.loadEvent = function() {
-    $scope.events = Events.all()
+    $scope.events = Events.all();
+    $scope.toDay = toDay;
   };
 
   $scope.loadEvent();
@@ -195,16 +218,18 @@ angular.module('starter.controllers', ['firebase', 'gapi', 'angular.filter'])
     event.provider = $rootScope.userInfo.provider;
     event.displayName = $rootScope.userInfo.google.displayName;
     event.uid = $rootScope.userInfo.uid;
+    event.date = event.date.yyyymmdd();
     Events.create(event);
     $scope.loadEvent();
     $scope.eventModal.hide();
-    event.title='';
+    event={};
   }
 
   $scope.onItemEdit = function(event){
     $ionicPopup.prompt({
       title: 'Update event', 
-      sunTitle: 'Enter new event'
+      sunTitle: 'Enter new event',
+      template: event.title
     }).then(function(res){
       if(res != undefined){
         Events.edit(res, event);

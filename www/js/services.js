@@ -18,7 +18,7 @@ angular.module('starter.services', ['firebase'])
     create: function(event) {
       events.$add({
         title: event.title,
-        date: toDay,
+        date: event.date,
         displayName: event.displayName,
         uid: event.uid
       })
@@ -97,8 +97,7 @@ angular.module('starter.services', ['firebase'])
       })
       console.log(room.date);
     },
-    edit: function(res, room) {
-      rooms.$getRecord(room.$id).title = res;
+    edit: function(room) {
       rooms.$save(room);
     },
     remove: function(room) {

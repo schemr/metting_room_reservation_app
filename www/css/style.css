@@ -20,3 +20,37 @@
 	right: 0;
 	bottom: 10%;
 }
+.label_a{
+	padding: 1px 5px;
+	font-size: 80%;
+	border-radius: 10px;
+	color: #fff;
+	border-color: #0a9dc7;
+  background-color: #11c1f3;
+}
+.label_b{
+	padding: 1px 5px;
+	font-size: 80%;
+	border-radius: 10px;
+	color: #fff;
+	border-color: #28a54c;
+  background-color: #33cd5f;
+}
+.buttons_a {
+	padding:10px 0;
+}
+.button_a{
+	padding:0 9px;
+}
+.button_b{
+	padding:0 9px;
+  margin: 0px 2px;
+  min-width: 34px;
+  min-height: 34px;
+  font-size: 18px;
+  line-height: 32px;
+}
+.textWrap{
+	text-overflow:inherit!important;
+  white-space:normal!important;
+}

@@ -9,13 +9,13 @@
       <ion-item ng-show="!events.length">
         <p>No Event</p>
       </ion-item>
-      <ion-item ng-show="events.length" class="item-remove-animate" ng-repeat="event in events">
-        <p>
-          {{event.date | date:'yyyy-MM-dd'}} 
+      <ion-item ng-show="events.length" class="item-remove-animate" ng-repeat="event in events | orderBy:'-date'">
+        <p class="item-button-right textWrap">
+          {{event.date}} 
           <strong>{{event.title}}</strong> 
-          <span>{{event.displayName}}</span>
+          <span class="label_a">{{event.displayName}}</span>
           <!-- edit button -->
-          <button class="button buttion-icon" ng-click="onItemEdit(event)" ng-show="event.uid == userInfo.uid">
+          <button class="button button-positive button_b" ng-click="onItemEdit(event)" ng-show="event.uid == userInfo.uid">
             <i class="icon ion-edit"></i>  
           </button>
         </p>
@@ -34,6 +34,12 @@
       </ion-header-bar>
       <ion-content>
         <form ng-submit="createEvent(event)" >
+          <div class="list">
+              <label class="item item-input">
+                <span class="input-label">Event Date</span>
+                <input type="date" min="{{toDay}}" ng-model="event.date">
+              </label>
+          </div>
           <div class="list">
               <label class="item item-input">
                 <input type="text" placeholder="이벤트를 입력하세요" ng-model="event.title">

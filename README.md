@@ -1,4 +1,4 @@
-# maxstApp
+# Metting room reservation App
 
 ## config
 - ionic Framework
